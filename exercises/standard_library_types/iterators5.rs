@@ -10,7 +10,6 @@
 //
 // Make the code compile and the tests pass.
 
-
 use std::collections::HashMap;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -33,7 +32,8 @@ fn count_for(map: &HashMap<String, Progress>, value: Progress) -> usize {
 fn count_iterator(map: &HashMap<String, Progress>, value: Progress) -> usize {
     // map is a hashmap with String keys and Progress values.
     // map = { "variables1": Complete, "from_str": None, ... }
-    map.iter().filter(|(_, &v)| v == value).collect::<Vec<_>>().len()
+    // map.iter().filter(|(_, &v)| v == value).count()
+    map.values().filter(|&v| v == &value).count()
 }
 
 fn count_collection_for(collection: &[HashMap<String, Progress>], value: Progress) -> usize {
@@ -52,16 +52,19 @@ fn count_collection_iterator(collection: &[HashMap<String, Progress>], value: Pr
     // collection is a slice of hashmaps.
     // collection = [{ "variables1": Complete, "from_str": None, ... },
     //     { "variables2": Complete, ... }, ... ]
-    let mut count = 0;
-    for m in collection.iter() {
-        for (_, &v) in m {
-            if v == value {
-                count += 1;
-            }
-        }
-    }
-    count
+    // collection
+    //     .iter()
+    //     .map(|m| count_iterator(m, value))
+    //     .collect::<Vec<usize>>()
+    //     .iter()
+    //     .fold(0, |sum, i| sum + i)
+    // collection
+    //     .iter()
+    //     .fold(0, |sum, i| sum + count_iterator(i, value))
+    collection.iter().map(|x| count_iterator(x, value)).sum()
 }
+
+fn main() {}
 
 #[cfg(test)]
 mod tests {
